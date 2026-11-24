@@ -1,0 +1,22 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+# (Sisa folder generated jika masih ada)
+/src/generated/prisma
+
+# Logs (Mencegah file error ter-upload)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS generated files (File sampah bawaan Windows/Mac)
+.DS_Store
+Thumbs.db
+
+# Uploaded Files
+uploads/
+public/uploads/
+!uploads/.gitkeep
+

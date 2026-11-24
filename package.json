@@ -1,0 +1,43 @@
+{
+  "name": "be",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "npm init -y\r npm install express dotenv prisma @prisma/client\r npm install -D nodemon\r cd src\r npx prisma init\r pindah prisma.config.ts ke src/config dan rename menjadi prisma.js\r pindahkan isi .env di dalam src ke env project root",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed": "node prisma/seed.js",
+    "hash-passwords": "node prisma/hash-existing.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcrypt": "^6.0.0",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "joi": "^18.2.9",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.4.0",
+    "pg": "^8.21.0",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
+    "prisma": "^7.8.0",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "nodemon": "^3.1.14",
+    "pino-pretty": "^13.2.0"
+  }
+}

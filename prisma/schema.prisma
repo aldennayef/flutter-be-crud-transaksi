@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model bio_fields {
+  id         BigInt    @id @default(autoincrement())
+  key_name   String    @db.VarChar(100)
+  value_text String?   @db.VarChar(255)
+  is_status  Boolean?  @default(false)
+  sort_order Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([sort_order], map: "idx_bio_fields_sort")
+}
+
+model bio_settings {
+  id         BigInt    @id @default(autoincrement())
+  file_id    String?   @db.VarChar(100)
+  initials   String?   @db.VarChar(20)
+  org        String?   @db.VarChar(255)
+  heading    String?   @db.VarChar(255)
+  photo_url  String?   @db.VarChar(500)
+  paragraphs Json?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model cv_settings {
+  id              BigInt    @id @default(autoincrement())
+  eyebrow         String?   @db.VarChar(255)
+  title_line1     String?   @db.VarChar(255)
+  title_highlight String?   @db.VarChar(255)
+  subtitle        String?
+  button_label    String?   @db.VarChar(100)
+  button_sub      String?   @db.VarChar(255)
+  cv_url          String?   @db.VarChar(500)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  updated_at      DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model hero_settings {
+  id                  BigInt    @id @default(autoincrement())
+  pilot_id            String?   @db.VarChar(100)
+  status              String?   @db.VarChar(100)
+  first_name          String?   @db.VarChar(100)
+  last_name           String?   @db.VarChar(100)
+  role                String?   @db.VarChar(255)
+  description         String?
+  photo_url           String?   @db.VarChar(500)
+  photo_initials      String?   @db.VarChar(20)
+  photo_footer_org    String?   @db.VarChar(255)
+  photo_footer_status String?   @db.VarChar(255)
+  cta_primary_label   String?   @db.VarChar(32)
+  cta_primary_href    String?   @db.VarChar(10)
+  cta_secondary_label String?   @db.VarChar(32)
+  cta_secondary_href  String?   @db.VarChar(10)
+  created_at          DateTime? @default(now()) @db.Timestamp(6)
+  updated_at          DateTime? @default(now()) @db.Timestamp(6)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model projects {
+  id           BigInt    @id @default(autoincrement())
+  seq          String?   @db.VarChar(50)
+  type         String?   @db.VarChar(100)
+  name         String    @db.VarChar(255)
+  description  String?
+  accent_color String?   @db.VarChar(20)
+  tags         Json?
+  links        Json?
+  sort_order   Int?      @default(0)
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([sort_order], map: "idx_projects_sort")
+}
+
+model skill_categories {
+  id         BigInt    @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  sort_order Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  skills     skills[]
+
+  @@index([sort_order], map: "idx_skill_categories_sort")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model skills {
+  id               BigInt           @id @default(autoincrement())
+  category_id      BigInt
+  name             String           @db.VarChar(100)
+  level            String?          @db.VarChar(20)
+  sort_order       Int?             @default(0)
+  created_at       DateTime?        @default(now()) @db.Timestamp(6)
+  updated_at       DateTime?        @default(now()) @db.Timestamp(6)
+  skill_categories skill_categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_skill_category")
+
+  @@index([category_id], map: "idx_skills_category")
+  @@index([sort_order], map: "idx_skills_sort")
+}
+
+model social_links {
+  id         BigInt    @id @default(autoincrement())
+  label      String    @db.VarChar(100)
+  href       String    @db.VarChar(500)
+  sort_order Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([sort_order], map: "idx_social_links_sort")
+}
+
+model users {
+  id            BigInt         @id @default(autoincrement())
+  username      String         @unique @db.VarChar(32)
+  password      String         @db.VarChar(100)
+  refresh_token String?        @db.Text
+  created_at    DateTime?      @default(now()) @db.Timestamp(6)
+  updated_at    DateTime?      @default(now()) @db.Timestamp(6)
+  transactions  transactions[]
+}
+
+model transactions {
+  id          BigInt    @id @default(autoincrement())
+  user_id     BigInt?
+  title       String    @db.VarChar(255)
+  amount      Decimal   @db.Decimal(15, 2)
+  type        String    @db.VarChar(50) // "INCOME" atau "EXPENSE"
+  category    String?   @db.VarChar(100)
+  description String?   @db.Text
+  date        DateTime  @default(now()) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_transactions_user")
+
+  @@index([user_id], map: "idx_transactions_user")
+  @@index([date], map: "idx_transactions_date")
+}
